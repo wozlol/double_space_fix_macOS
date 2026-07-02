@@ -89,14 +89,32 @@ PLIST
 chmod 644 "$plist"
 
 launchctl bootout "gui/$UID" "$plist" 2>/dev/null || true
+: > "$log_path"
 launchctl bootstrap "gui/$UID" "$plist"
 launchctl kickstart -k "gui/$UID/$label"
+
+sleep 1
+service_status="$(launchctl print "gui/$UID/$label" 2>&1 || true)"
+latest_log="$(tail -40 "$log_path" 2>/dev/null || true)"
 
 echo "Installed and started $label"
 echo "App: $app_path"
 echo "LaunchAgent: $plist"
 echo "Log: $log_path"
 echo
-echo "If the log says Accessibility permission is needed, open:"
-echo "System Settings > Privacy & Security > Accessibility"
-echo "Then enable or add: Double Space Fix"
+
+if echo "$service_status" | grep -q "state = running"; then
+  pid="$(echo "$service_status" | awk -F '= ' '/pid = / {print $2; exit}')"
+  echo "Status: running${pid:+ with PID $pid}"
+elif echo "$latest_log" | grep -q "Accessibility permission"; then
+  echo "Status: Accessibility permission is still needed."
+  echo "Open System Settings > Privacy & Security > Accessibility"
+  echo "Then enable or add: Double Space Fix"
+  echo "After granting permission, run ./install_startup.command again."
+else
+  echo "Status: not running yet."
+  echo "Run this to inspect details:"
+  echo "launchctl print \"gui/\$UID/$label\""
+  echo "And check:"
+  echo "$log_path"
+fi

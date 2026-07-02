@@ -52,6 +52,10 @@ If macOS asks for Accessibility permission, allow `Double Space Fix` in:
 System Settings > Privacy & Security > Accessibility
 ```
 
+The installer checks the LaunchAgent after starting it and prints whether it is
+running or still needs Accessibility permission. It clears `double_space_fix.log`
+before each install/start check so stale permission errors are not left behind.
+
 Remove it from login startup:
 
 ```sh
