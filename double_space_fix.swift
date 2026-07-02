@@ -253,5 +253,6 @@ let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
 CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
 CGEvent.tapEnable(tap: tap, enable: true)
 
-print("double_space_fix is running. Config: \(configFile)")
+let startedAt = ISO8601DateFormatter().string(from: Date())
+fputs("[\(startedAt)] started double_space_fix. Config: \(configFile)\n", stderr)
 CFRunLoopRun()

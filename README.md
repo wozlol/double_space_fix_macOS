@@ -37,3 +37,12 @@ double-spaces are blocked. Raise it if unwanted duplicate spaces still appear.
 ```sh
 ./stop_double_space_fix.command
 ```
+
+## Check Status
+
+```sh
+ps -p "$(cat double_space_fix.pid)"
+```
+
+The log is historical. It records timestamped starts, stops, errors, and only
+logs individual corrections if `log_suppressed = true`.
