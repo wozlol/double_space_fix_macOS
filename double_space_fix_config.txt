@@ -4,7 +4,7 @@
 # milliseconds after the previous accepted plain space.
 # Lower this if intentional fast double-spaces get blocked.
 # Raise this if duplicate spaces still slip through.
-max_space_interval_ms = 90
+max_space_interval_ms = 140
 
 # Usually leave this at 0. Raise it only if you need to ignore impossibly
 # tiny intervals from another tool that generates key events.

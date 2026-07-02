@@ -1,2 +1,4 @@
 double_space_fix.log
 double_space_fix.pid
+.build/
+Double Space Fix.app/

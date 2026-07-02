@@ -205,12 +205,22 @@ if CommandLine.arguments.contains("--check") {
     exit(0)
 }
 
-guard AXIsProcessTrusted() else {
+let accessibilityPromptOptions = [
+    kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true
+] as CFDictionary
+
+guard AXIsProcessTrustedWithOptions(accessibilityPromptOptions) else {
     fputs("""
     double_space_fix needs Accessibility permission before it can filter keyboard events.
 
-    Open System Settings > Privacy & Security > Accessibility, then allow the terminal app you use to run this script.
-    If you run it from Terminal, allow Terminal. If you run it from iTerm, allow iTerm.
+    Open System Settings > Privacy & Security > Accessibility, then allow the app or terminal that launched it.
+
+    Manual run:
+    - If you run it from Terminal, allow Terminal.
+    - If you run it from iTerm, allow iTerm.
+
+    Startup run:
+    - If installed with install_startup.command, allow Double Space Fix.
 
     After granting permission, quit and run this script again.
 

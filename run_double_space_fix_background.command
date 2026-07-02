@@ -3,6 +3,9 @@ cd "$(dirname "$0")" || exit 1
 
 log_file="$PWD/double_space_fix.log"
 pid_file="$PWD/double_space_fix.pid"
+module_cache="$PWD/.build/swift-module-cache"
+
+mkdir -p "$module_cache"
 
 if [[ -f "$pid_file" ]]; then
   existing_pid="$(cat "$pid_file")"
@@ -12,7 +15,7 @@ if [[ -f "$pid_file" ]]; then
   fi
 fi
 
-nohup ./double_space_fix.swift --config "$PWD/double_space_fix_config.txt" > "$log_file" 2>&1 &
+nohup env CLANG_MODULE_CACHE_PATH="$module_cache" ./double_space_fix.swift --config "$PWD/double_space_fix_config.txt" > "$log_file" 2>&1 &
 pid=$!
 echo "$pid" > "$pid_file"
 echo "double_space_fix started in the background with PID $pid"

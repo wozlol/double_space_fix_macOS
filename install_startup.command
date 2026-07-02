@@ -6,12 +6,17 @@ cd "$(dirname "$0")" || exit 1
 label="com.woz.double-space-fix"
 launch_agents="$HOME/Library/LaunchAgents"
 plist="$launch_agents/$label.plist"
-script_path="$PWD/double_space_fix.swift"
+app_path="$PWD/Double Space Fix.app"
+contents_path="$app_path/Contents"
+macos_path="$contents_path/MacOS"
+resources_path="$contents_path/Resources"
+binary_path="$macos_path/double_space_fix"
 config_path="$PWD/double_space_fix_config.txt"
 log_path="$PWD/double_space_fix.log"
 pid_file="$PWD/double_space_fix.pid"
+module_cache="$PWD/.build/swift-module-cache"
 
-mkdir -p "$launch_agents"
+mkdir -p "$launch_agents" "$macos_path" "$resources_path" "$module_cache"
 
 if [[ -f "$pid_file" ]]; then
   existing_pid="$(cat "$pid_file")"
@@ -21,6 +26,39 @@ if [[ -f "$pid_file" ]]; then
   fi
   rm -f "$pid_file"
 fi
+
+cat > "$contents_path/Info.plist" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>en</string>
+  <key>CFBundleExecutable</key>
+  <string>double_space_fix</string>
+  <key>CFBundleIdentifier</key>
+  <string>$label</string>
+  <key>CFBundleName</key>
+  <string>Double Space Fix</string>
+  <key>CFBundleDisplayName</key>
+  <string>Double Space Fix</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleShortVersionString</key>
+  <string>1.0</string>
+  <key>CFBundleVersion</key>
+  <string>1</string>
+  <key>LSBackgroundOnly</key>
+  <true/>
+</dict>
+</plist>
+PLIST
+
+env CLANG_MODULE_CACHE_PATH="$module_cache" swiftc "$PWD/double_space_fix.swift" -o "$binary_path"
+chmod +x "$binary_path"
+
+codesign --force --deep --sign - "$app_path" >/dev/null 2>&1 || true
 
 cat > "$plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -32,7 +70,7 @@ cat > "$plist" <<PLIST
   <string>$label</string>
   <key>ProgramArguments</key>
   <array>
-    <string>$script_path</string>
+    <string>$binary_path</string>
     <string>--config</string>
     <string>$config_path</string>
   </array>
@@ -55,5 +93,10 @@ launchctl bootstrap "gui/$UID" "$plist"
 launchctl kickstart -k "gui/$UID/$label"
 
 echo "Installed and started $label"
+echo "App: $app_path"
 echo "LaunchAgent: $plist"
 echo "Log: $log_path"
+echo
+echo "If the log says Accessibility permission is needed, open:"
+echo "System Settings > Privacy & Security > Accessibility"
+echo "Then enable or add: Double Space Fix"

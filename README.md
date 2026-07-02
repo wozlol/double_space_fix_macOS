@@ -29,7 +29,7 @@ Edit `double_space_fix_config.txt`, then stop and start the background process:
 ./run_double_space_fix_background.command
 ```
 
-Start with `max_space_interval_ms = 90`. Lower it if intentional fast
+Start with `max_space_interval_ms = 140`. Lower it if intentional fast
 double-spaces are blocked. Raise it if unwanted duplicate spaces still appear.
 
 ## Stop
@@ -44,6 +44,12 @@ Install and start the per-user LaunchAgent:
 
 ```sh
 ./install_startup.command
+```
+
+If macOS asks for Accessibility permission, allow `Double Space Fix` in:
+
+```text
+System Settings > Privacy & Security > Accessibility
 ```
 
 Remove it from login startup:
