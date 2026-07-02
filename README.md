@@ -38,10 +38,36 @@ double-spaces are blocked. Raise it if unwanted duplicate spaces still appear.
 ./stop_double_space_fix.command
 ```
 
+## Run At Login
+
+Install and start the per-user LaunchAgent:
+
+```sh
+./install_startup.command
+```
+
+Remove it from login startup:
+
+```sh
+./uninstall_startup.command
+```
+
+Restart it after editing config:
+
+```sh
+launchctl kickstart -k "gui/$UID/com.woz.double-space-fix"
+```
+
 ## Check Status
 
 ```sh
 ps -p "$(cat double_space_fix.pid)"
+```
+
+If installed through LaunchAgent, check it with:
+
+```sh
+launchctl print "gui/$UID/com.woz.double-space-fix"
 ```
 
 The log is historical. It records timestamped starts, stops, errors, and only
