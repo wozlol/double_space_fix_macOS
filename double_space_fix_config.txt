@@ -1,0 +1,29 @@
+# double_space_fix settings
+#
+# The script suppresses a second plain space if it arrives this many
+# milliseconds after the previous accepted plain space.
+# Lower this if intentional fast double-spaces get blocked.
+# Raise this if duplicate spaces still slip through.
+max_space_interval_ms = 90
+
+# Usually leave this at 0. Raise it only if you need to ignore impossibly
+# tiny intervals from another tool that generates key events.
+min_space_interval_ms = 0
+
+# Keeps shortcuts such as Command-Space, Control-Space, and Option-Space alone.
+only_without_command_control_option = true
+
+# Keeps normal held-space key repeat behavior under macOS control.
+ignore_auto_repeat = true
+
+# suppress = block the duplicate space before the active app sees it.
+# backspace = let the space through, then immediately send Delete.
+correction_mode = suppress
+
+# Used only when correction_mode = backspace.
+backspace_delay_ms = 8
+
+# Set true while tuning if you want a log line for each correction.
+log_suppressed = false
+
+enabled = true
